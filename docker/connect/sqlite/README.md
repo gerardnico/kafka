@@ -2,6 +2,9 @@
 
 
 ## Introduction
+This docker-compose file was created for this tutorial [Kafka Connect - Sqlite in Distributed Mode](https://gerardnico.com/wiki/dit/kafka/connector/sqlite_distributed).
+
+
 This repository is a copy of the [Kafka cp-all-in-one](https://github.com/confluentinc/cp-docker-images/blob/3.3.x/examples/cp-all-in-one/docker-compose.yml) where the [docker-compose.yml](./docker-compose.yml) was modified to:
   * add the version to the image (no more `latest` as image tag)
   * add the `CONNECT_PLUGIN_PATH` environment variable to make the Jdbc connector plugin available.
@@ -37,11 +40,20 @@ Example:
   * From a container
 ```bash
 docker-compose exec connect bash
-kafka-topics --list --zookeeper zookeeper:32181
+kafka-topics --list --zookeeper zookeeper:2181
 ```
-  * From your machine with the [DOCKER_IP](https://gerardnico.com/wiki/docker/host#ip)
+  * From your machine, you need first to add entries in your network host file. For instance, where `192.168.99.100` is your [DOCKER_IP](https://gerardnico.com/wiki/docker/host#ip)
+```text
+192.168.99.100   broker
+192.168.99.100   connect
+192.168.99.100   zookeeper
+192.168.99.100   schema_registry
+192.168.99.100   control_center
+```
+then you can use the console utility with this hostnames.
 ```bash
-kafka-topics --list --zookeeper ${DOCKER_IP}:32181
+kafka-topics --list --zookeeper zookeeper:2181
+kafka-avro-console-consumer --bootstrap-server broker:9092 --topic test-sqlite-jdbc-accounts --from-beginning --property="schema.registry.url=http://schema_registry:8081"
 ```
 
 ## Note to dev 
