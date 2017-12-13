@@ -3,4 +3,6 @@
 
 ## Introduction
 
-A repository containing actually only [docker image](./docker).
+A repository containing:
+  * [docker image](./docker).
+  * [demo code](./apps/demo)
