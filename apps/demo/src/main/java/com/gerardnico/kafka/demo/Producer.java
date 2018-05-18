@@ -30,6 +30,9 @@ public class Producer {
         config.put("buffer.memory", 33554432);
         config.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         config.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        // The producer consists of a pool of buffer space that holds records that haven't yet been transmitted to the server
+        // as well as a background I/O thread that is responsible for turning these records into requests and transmitting them to the cluster.
         KafkaProducer kafkaProducer = new KafkaProducer<String, String>(config);
 
         // The topic will be created if not present
@@ -41,9 +44,13 @@ public class Producer {
             key = "k"+Integer.toString(i);
             value = Integer.toString(i);
             ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, key, value);
+
             // All writes are asynchronous by default.
             // The Java producer includes a send() API which returns a future which can be polled to get the result of the send.
+            // The send() method is asynchronous.
+            // When called it adds the record to a buffer of pending record sends and immediately returns.
             Future<RecordMetadata> future = kafkaProducer.send(producerRecord);
+
             try {
                 // To make writes synchronous, just wait on the returned future.
                 RecordMetadata metadata = future.get();
@@ -55,6 +62,8 @@ public class Producer {
             }
         }
 
+        // Failure to close the producer after use will leak these resources.
+        kafkaProducer.close();
 
     }
 
