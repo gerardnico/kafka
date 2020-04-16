@@ -117,7 +117,7 @@ public class StreamWordCountDemo {
         // KStream is an abstraction of a record stream of KeyValue pairs,
         KStream<String, String> kStream =
                 streamsBuilder.stream(
-                        Topics.MY_TOPIC,
+                        TopicText.TEXT_LINES_TOPIC,
                         Consumed.with(
                                 Serdes.String(),
                                 Serdes.String())

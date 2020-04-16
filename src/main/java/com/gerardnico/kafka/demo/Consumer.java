@@ -1,6 +1,5 @@
 package com.gerardnico.kafka.demo;
 
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -18,10 +17,17 @@ public class Consumer {
      *
      * Code is from
      * https://kafka.apache.org/20/javadoc/index.html?org/apache/kafka/clients/consumer/KafkaConsumer.html
+     * Same as:
      *
+     * kafka-console-consumer.sh --bootstrap-server localhost:9092     --topic mytopic     --from-beginning     --formatter kafka.tools.DefaultMessageFormatter     --property print.key=true     --property print.value=true     -- property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer     --property value.deserializer=org.apache.kafka.common.serialization.StringSerializer
      * @param args
      */
     public static void main(String[] args) {
+
+        // To report on a specific topic, change this value
+        // String topicName = TopicNumber.NUMBER_TOPIC;
+        String topicName = "WordsWithCountsTopic"; //TopicText.TEXT_LINES_TOPIC;
+
         // http://kafka.apache.org/documentation.html#consumerconfigs
         Properties props = new Properties();
         // The connection server (a list)
@@ -42,19 +48,17 @@ public class Consumer {
         System.out.println("Topics List:");
         Map<String, List<PartitionInfo>> topics = consumer.listTopics();
 
-        String topic = Topics.MY_TOPIC;
-        if (!topics.keySet().contains(topic)) {
+        if (!topics.keySet().contains(topicName)) {
             System.err.println("Topic not found. We can also see this topics");
             topics.forEach((t, v) -> System.out.println(" * " + t));
-            throw new RuntimeException("Topic (" + topic + ") not found or unable to see it");
+            throw new RuntimeException("Topic (" + topicName + ") not found or unable to see it");
         }
 
-        // Subscribe
-        System.out.println("Topic (" + topic + ") found");
+        System.out.println("Topic (" + topicName + ") found");
 
-        System.out.println("Partition info for topic (" + topic + "): ");
+        System.out.println("Partition info for topic (" + topicName + "): ");
         final Set<TopicPartition> partitions = new HashSet<>();
-        for (final PartitionInfo partition : consumer.partitionsFor(topic)) {
+        for (final PartitionInfo partition : consumer.partitionsFor(topicName)) {
             partitions.add(new TopicPartition(partition.topic(), partition.partition()));
         }
         consumer.assign(partitions);

@@ -20,6 +20,10 @@ public class Producer {
 
     public static void main(String[] args) throws UnknownHostException {
 
+        // Change the topic if you want to produce data for another topic
+        Topic topic = new TopicText();
+        // Topic topic = new TopicNumber();
+
         Properties config = new Properties();
         config.put("client.id", InetAddress.getLocalHost().getHostName());
         config.put("bootstrap.servers", "localhost:9092");
@@ -38,14 +42,18 @@ public class Producer {
         ) {
 
             // The topic will be created if not present
-            String topic = Topics.MY_TOPIC;
+            String topicName = topic.getName();
             String key;
             String value;
-
-            for (int i = 0; i < 100; i++) {
+            int i = 0;
+            while (true){
+                i++;
                 key = "k" + i;
-                value = Integer.toString(i);
-                ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, key, value);
+                value = topic.get();
+                if (value==null || i>100){
+                    break;
+                }
+                ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topicName, key, value);
 
                 // All writes are asynchronous by default.
                 // The Java producer includes a send() API which returns a future which can be polled to get the result of the send.
@@ -67,7 +75,5 @@ public class Producer {
 
     }
 
-    //$
-    // kafka-console-consumer.sh --bootstrap-server localhost:9092     --topic mytopic     --from-beginning     --formatter kafka.tools.DefaultMessageFormatter     --property print.key=true     --property print.value=true     -- property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer     --property value.deserializer=org.apache.kafka.common.serialization.StringSerializer
 
 }
