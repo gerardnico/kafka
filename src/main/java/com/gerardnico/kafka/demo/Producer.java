@@ -43,7 +43,7 @@ public class Producer {
             String value;
 
             for (int i = 0; i < 100; i++) {
-                key = "k" + Integer.toString(i);
+                key = "k" + i;
                 value = Integer.toString(i);
                 ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, key, value);
 

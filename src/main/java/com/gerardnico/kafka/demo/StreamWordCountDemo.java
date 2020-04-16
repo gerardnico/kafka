@@ -50,7 +50,7 @@ import java.util.concurrent.CountDownLatch;
  * bin/kafka-topics.sh --create ...), and write some data to the input topic (e.g. via
  * bin/kafka-console-producer.sh). Otherwise you won't see any data arriving in the output topic.
  */
-public class WordCountDemo {
+public class StreamWordCountDemo {
 
     // Serdes are Serializers/deserializers (serde) for String and Long types
     // Ser-/Deserialization (key.serde, value.serde):
@@ -62,7 +62,7 @@ public class WordCountDemo {
         Properties props = new Properties();
         // Required
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streams-wordcount");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "broker:9092");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         // setting offset reset to earliest so that we can re-run the demo code with the same pre-loaded data
@@ -117,7 +117,7 @@ public class WordCountDemo {
         // KStream is an abstraction of a record stream of KeyValue pairs,
         KStream<String, String> kStream =
                 streamsBuilder.stream(
-                        "streams-plaintext-input",
+                        Topics.MY_TOPIC,
                         Consumed.with(
                                 Serdes.String(),
                                 Serdes.String())
