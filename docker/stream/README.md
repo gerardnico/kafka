@@ -2,7 +2,7 @@
 
 
 ## Introduction
-This repository contains a docker compose file that was used to follow the (Stream Quickstart)[http://kafka.apache.org/10/documentation/streams/quickstart]
+This repository contains a docker compose file that was used to follow the [Stream Quickstart](http://kafka.apache.org/10/documentation/streams/quickstart)
 
 
 
